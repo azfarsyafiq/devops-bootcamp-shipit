@@ -1,0 +1,51 @@
+/* board/client/race-track.css — the shared race view (projector + cockpit).
+   Dark-only, same palette family as style.css / play.css. Rows flex-share the
+   viewport height so 40+ racers fit with zero scrolling. */
+.race-track {
+  --ship-w: 26px;
+  --accent: #22d3ee;
+  --lane-bg: #1e293b;
+  --fg: #e2e8f0;
+  --dim: #94a3b8;
+  display: flex; flex-direction: column;
+  width: 100%; height: 100%; min-height: 0; box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  font: 13px/1.2 ui-monospace, Menlo, Consolas, monospace;
+  color: var(--fg);
+  background: #0b1220;
+}
+.race-banner { min-height: 1.3em; padding: 0.15rem 0; text-align: center; color: var(--dim); }
+.race-track[data-phase='finished'] .race-banner { color: var(--accent); }
+
+.race-rows { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 2px; }
+.race-track[data-phase='idle'] .race-rows { opacity: 0.55; }
+
+.race-row { flex: 1 1 0; min-height: 10px; max-height: 48px; display: flex; align-items: center; gap: 0.5rem; }
+.race-row.me { flex-grow: 2; max-height: 64px; }
+.race-row.me .cs { color: var(--accent); font-weight: 700; }
+
+.race-row .rank { width: 2ch; text-align: right; color: var(--dim); font-size: 0.85em; }
+.race-row .cs { width: 14ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.race-row .meta { width: 8ch; text-align: right; color: var(--dim); font-variant-numeric: tabular-nums; }
+
+.race-row .lane { position: relative; flex: 1; min-width: 0; height: 6px; border-radius: 999px; background: var(--lane-bg); }
+.race-row .lane::after { /* finish line */
+  content: ''; position: absolute; right: 0; top: -5px; bottom: -5px; width: 2px;
+  background: var(--accent); opacity: 0.6;
+}
+.race-row .ship {
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: var(--ship-w); height: var(--ship-w);
+  display: grid; place-items: center;
+  transition: left 150ms linear;
+}
+@media (prefers-reduced-motion: reduce) { .race-row .ship { transition: none; } }
+.race-row .ship .sprite { width: 100%; height: 100%; display: block; object-fit: contain; }
+.race-row .ship .glyph { font-size: 12px; line-height: 1; }
+.race-row .ship .glyph::before { content: '▶'; }
+
+/* 25+ racers: reclaim label space, shrink sprites, keep every row legible */
+.race-rows[data-dense='1'] .cs { display: none; }
+.race-rows[data-dense='1'] { --ship-w: 16px; }
+.race-rows[data-dense='1'] .race-row { gap: 0.3rem; }
+.race-rows[data-dense='1'] .meta { font-size: 0.8em; width: 6ch; }
