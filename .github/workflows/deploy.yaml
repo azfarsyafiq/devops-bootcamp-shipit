@@ -18,6 +18,10 @@ jobs:
       - uses: actions/setup-node@v7
       - run: npm clean-install
       - run: npm run test
+      - run: bash scripts/report.sh
+        env:
+          BOARD_URL: ${{ vars.BOARD_URL }}
+          SHIPIT_TOKEN: ${{ secrets.SHIPIT_TOKEN }}
 
   deploy:
     needs: test
@@ -31,3 +35,4 @@ jobs:
         with:
           path: launchpad/dist
       - uses: actions/deploy-pages@v5
+  
